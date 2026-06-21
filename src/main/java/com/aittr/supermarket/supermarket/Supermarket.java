@@ -1,5 +1,6 @@
 package com.aittr.supermarket.supermarket;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class Supermarket {
@@ -30,6 +31,10 @@ public class Supermarket {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<Product> getStock() {
+        return stock;
     }
 
     public void addProduct(Product p, double quantity) {
@@ -234,6 +239,178 @@ public class Supermarket {
             default:
 
                 System.out.println("Wrong sorting criteria");
+        }
+    }
+
+    public void readProductsFromFile(ArrayList<Product> stock,
+                                     String folderPath,
+                                     String fileName) {
+
+        String filePath = folderPath + File.separator + fileName;
+
+        File fl = new File(filePath);
+
+        if (fl.exists() == false) {
+
+            System.out.println("file " + filePath + " not exists");
+
+            return;
+        }
+
+        try {
+
+            FileReader fr = new FileReader(fl);
+
+            BufferedReader br = new BufferedReader(fr);
+
+            while (true) {
+
+                String fromFile = br.readLine();
+
+                if (fromFile == null) {
+
+                    br.close();
+
+                    break;
+                }
+
+                // "Apple#201#kg#4.5#30"
+                String[] ar = fromFile.split("#");
+
+                String name = ar[0];
+
+                int code = Integer.parseInt(ar[1]);
+
+                String unit = ar[2];
+
+                double price = Double.parseDouble(ar[3]);
+
+                double quantity = Double.parseDouble(ar[4]);
+
+                Product p =
+                        new Product(name, code, unit, price);
+
+                addProduct(p, quantity);
+            }
+
+        } catch (IOException e) {
+
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void saveProductsToFile(ArrayList<Product> stock,
+                                   String folderPath,
+                                   String fileName) {
+
+        File folder = new File(folderPath);
+
+        if (folder.exists() == false)
+            folder.mkdirs();
+
+        String filePath =
+                folderPath + File.separator + fileName;
+
+        File fl = new File(filePath);
+
+        if (fl.exists() == false) {
+
+            try {
+
+                fl.createNewFile();
+
+            } catch (IOException e) {
+
+                System.out.println(e.getMessage());
+            }
+        }
+
+        try {
+
+            FileWriter fw = new FileWriter(fl);
+
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for (Product p : stock) {
+
+                String toFile =
+                        p.getName()
+                                + "#" + p.getCode() + "#"
+                                + p.getUnit() + "#"
+                                + p.getPrice() + "#"
+                                + p.getQuantity();
+
+                bw.write(toFile);
+
+                bw.newLine();
+            }
+
+            bw.close();
+
+        } catch (IOException e) {
+
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void fillProducts() {
+
+        InputStreamReader isr =
+                new InputStreamReader(System.in);
+
+        BufferedReader br =
+                new BufferedReader(isr);
+
+        while (true) {
+
+            try {
+
+                System.out.print("Enter name >>>");
+
+                String name = br.readLine();
+
+                System.out.print("Enter code >>>");
+
+                String answer = br.readLine();
+
+                int code = Integer.parseInt(answer);
+
+                System.out.print("Enter unit >>>");
+
+                String unit = br.readLine();
+
+                System.out.print("Enter price >>>");
+
+                answer = br.readLine();
+
+                double price = Double.parseDouble(answer);
+
+                System.out.print("Enter quantity >>>");
+
+                answer = br.readLine();
+
+                double quantity = Double.parseDouble(answer);
+
+                Product p =
+                        new Product(name, code, unit, price);
+
+                addProduct(p, quantity);
+
+                System.out.print("Another one? yes/no >>>");
+
+                answer = br.readLine();
+
+                if (answer.equalsIgnoreCase("no")) {
+
+                    br.close();
+
+                    break;
+                }
+
+            } catch (IOException e) {
+
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

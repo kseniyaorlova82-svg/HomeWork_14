@@ -1,8 +1,24 @@
 package com.aittr.supermarket.supermarket;
 
+import java.io.File;
+
 public class MainSupermarket {
 
     public static void main(String[] args) {
+
+        String home =
+                System.getProperty("user.home");
+
+        String folderPath =
+                home + File.separator + "supermarket";
+
+        String fileName =
+                "products.txt";
+
+        Supermarket shop =
+                new Supermarket(
+                        "Fresh Market",
+                        "Berlin, Alexanderplatz 10");
 
         Product p1 =
                 new Product("Apple", 201, "kg", 4.50);
@@ -34,11 +50,6 @@ public class MainSupermarket {
         Product p10 =
                 new Product("Pizza", 210, "piece", 12.90);
 
-        Supermarket shop =
-                new Supermarket(
-                        "Fresh Market",
-                        "Berlin, Alexanderplatz 10");
-
         shop.addProduct(p1, 30);
         shop.addProduct(p2, 45);
         shop.addProduct(p3, 20);
@@ -52,43 +63,25 @@ public class MainSupermarket {
 
         shop.printProducts();
 
-        shop.findProduct(203);
+        shop.saveProductsToFile(
+                shop.getStock(),
+                folderPath,
+                fileName);
 
-        shop.removeProductFromStock(202);
-
-        shop.printProducts();
-
-        shop.reducePriceForAll(10);
-
-        shop.printProducts();
-
-        System.out.println(
-                "Total cost = "
-                        + shop.totalCost());
-
-        shop.sortProductsBy(
-                ISortingCriteria.SORT_BY_PRICE);
+        shop.readProductsFromFile(
+                shop.getStock(),
+                folderPath,
+                fileName);
 
         shop.printProducts();
 
-        shop.sortProductsBy(
-                ISortingCriteria.SORT_BY_CODE_REVERSE);
+        shop.fillProducts();
 
         shop.printProducts();
 
-        shop.sortProductsBy(
-                ISortingCriteria.SORT_BY_NAME_REVERSE);
-
-        shop.printProducts();
-
-        shop.sortProductsBy(
-                ISortingCriteria.SORT_BY_QUANTITY);
-
-        shop.printProducts();
-
-        shop.sortProductsBy(
-                ISortingCriteria.SORT_BY_QUANTITY_REVERSE);
-
-        shop.printProducts();
+        shop.saveProductsToFile(
+                shop.getStock(),
+                folderPath,
+                fileName);
     }
 }
